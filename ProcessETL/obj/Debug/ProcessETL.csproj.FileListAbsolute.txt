@@ -1,0 +1,12 @@
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\bin\Debug\ProcessETL.exe.config
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\bin\Debug\ProcessETL.exe
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\bin\Debug\ProcessETL.pdb
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\bin\Debug\CsvHelper.dll
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\bin\Debug\System.ValueTuple.dll
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\bin\Debug\CsvHelper.xml
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\bin\Debug\System.ValueTuple.xml
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\obj\Debug\ProcessETL.csprojAssemblyReference.cache
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\obj\Debug\ProcessETL.csproj.CoreCompileInputs.cache
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\obj\Debug\ProcessETL.csproj.CopyComplete
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\obj\Debug\ProcessETL.exe
+C:\Users\1161166413\source\repos\ProcessETL\ProcessETL\obj\Debug\ProcessETL.pdb
