@@ -1,44 +1,82 @@
-﻿using CsvHelper;
+﻿using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Data;
-using System.IO;
 
 namespace ProcessETL
 {
     public class Program
     {
+        private static string _connString = "Data Source=//localhost/XE;User Id=system;Password=admin123;";
+
         static void Main(string[] args)
         {
             try
             {
                 Program programa = new Program();
 
-                DataTable tabelaProduto = programa.PopularTabelaArtistas();
+                DataTable artistas = programa.PopularTabelaArtistas();
+                DataTable gravadoras = programa.PopularTabelaGravadoras();
+
+                Console.ReadLine();
             }
-            catch (BadDataException bdEx)
+            catch (Exception exception)
             {
-                Console.WriteLine(bdEx);
+                Console.WriteLine("Ocorreu um erro: {0}", exception.Message);
             }
         }
 
+        #region [PRIVATE] PopularTabelaArtistas
         private DataTable PopularTabelaArtistas()
         {
             DataTable tabelaArtistas = new DataTable();
 
-            using (FileStream file = File.Open(@"C:\Users\1161166413\Desktop\artistas.csv", FileMode.Open, FileAccess.Read))
-            using (StreamReader reader = new StreamReader(file))
+            using (var conexao = new OracleConnection(_connString))
             {
-                using (var csv = new CsvReader(reader))
-                {
-                    while (csv.Read())
-                    {
-                        var name = csv.GetField<string>(0);
-                        tabelaArtistas.Rows.Add(name);
-                    }
-                }
+                conexao.Open();
 
-                return tabelaArtistas;
+                Console.WriteLine("Lendo tabela artistas...");
+
+                OracleCommand commandSQL = conexao.CreateCommand();
+
+                commandSQL.CommandText = "SELECT * FROM ARTISTAS";
+
+                commandSQL.CommandType = CommandType.Text;
+
+                OracleDataReader dr = commandSQL.ExecuteReader();
+
+                tabelaArtistas.Load(dr);
             }
+
+            return tabelaArtistas;
+
         }
+        #endregion
+
+        #region [PRIVATE] PopularTabelaArtistas
+        private DataTable PopularTabelaGravadoras()
+        {
+            DataTable tabelaGravadoras = new DataTable();
+
+            using (var conexao = new OracleConnection(_connString))
+            {
+                conexao.Open();
+
+                Console.WriteLine("Lendo tabela gravadoras...");
+
+                OracleCommand commandSQL = conexao.CreateCommand();
+
+                commandSQL.CommandText = "SELECT * FROM GRAVADORAS";
+
+                commandSQL.CommandType = CommandType.Text;
+
+                OracleDataReader dr = commandSQL.ExecuteReader();
+
+                tabelaGravadoras.Load(dr);
+            }
+
+            return tabelaGravadoras;
+
+        }
+        #endregion
     }
 }
