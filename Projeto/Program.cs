@@ -20,6 +20,7 @@ namespace ProcessETL
 
         DataTable dimensaoTempo;
         DataTable dimensaoArtistas;
+        DataTable dimensaoGravadoras;
         #endregion
 
         static void Main(string[] args)
@@ -28,7 +29,7 @@ namespace ProcessETL
             {
                 RealizarExtracao();
                 RealizarTransformacao();
-                //RealizarLoad();
+                //RealizarCarga();
 
                 Console.ReadLine();
             }
@@ -72,6 +73,26 @@ namespace ProcessETL
                 row["TPO_ART"] = artistasRow["TPO_ART"];
                 row["NAC_BRAS"] = artistasRow["NAC_BRAS"];
                 row["NOM_ART"] = artistasRow["NOM_ART"];
+
+                programa.dimensaoArtistas.Rows.Add(row);
+            }
+
+            programa.dimensaoGravadoras = new DataTable();
+            programa.dimensaoGravadoras.Columns.Add("ID_GRAV", typeof(int));
+            programa.dimensaoGravadoras.Columns.Add("UF_GRAV", typeof(string));
+            programa.dimensaoGravadoras.Columns.Add("NAC_BRAS", typeof(string));
+            programa.dimensaoGravadoras.Columns.Add("NOM_GRAV", typeof(string));
+
+            foreach (DataRow gravadoraRow in programa.tabelaGravadorasOperacional.Rows)
+            {
+                DataRow row = programa.dimensaoGravadoras.NewRow();
+
+                row["ID_GRAV"] = gravadoraRow["COD_GRAV"];
+                row["UF_GRAV"] = gravadoraRow["UF_GRAV"];
+                row["NAC_BRAS"] = gravadoraRow["NAC_BRAS"] == "F" ? "Falso" : "Verdadeiro";
+                row["NOM_GRAV"] = programa.ObterNomeEstadoPorSigla(gravadoraRow["NOM_GRAV"].ToString());
+
+                programa.dimensaoGravadoras.Rows.Add(row);
             }
         }
         #endregion
@@ -260,6 +281,34 @@ namespace ProcessETL
             }
 
             return tabelaCopias;
+        }
+        #endregion
+
+        #region [PRIVATE] ObterNomeEstadoPorSigla
+        private string ObterNomeEstadoPorSigla(string dsSiglaEstado)
+        {
+            string dsSiglaEstado = "";
+
+            switch (dsSiglaEstado)
+            {
+                case "SP":
+                    dsSiglaEstado = "São Paulo";
+                    break;
+                case "SE":
+                    dsSiglaEstado = "Sergipe";
+                    break;
+                case "RJ":
+                    dsSiglaEstado = "Rio de Janeiro";
+                    break;
+                case "BA":
+                    dsSiglaEstado = "Bahia";
+                    break;
+                case "CE":
+                    dsSiglaEstado = "Ceará";
+                    break;
+            }
+
+            return dsSiglaEstado;
         }
         #endregion
     }
