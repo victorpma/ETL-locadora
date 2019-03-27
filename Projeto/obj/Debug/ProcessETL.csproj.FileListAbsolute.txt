@@ -32,3 +32,11 @@ D:\Projetos\ETLVendas\Projeto\obj\Debug\ProcessETL.csproj.CoreCompileInputs.cach
 D:\Projetos\ETLVendas\Projeto\obj\Debug\ProcessETL.csproj.CopyComplete
 D:\Projetos\ETLVendas\Projeto\obj\Debug\ProcessETL.exe
 D:\Projetos\ETLVendas\Projeto\obj\Debug\ProcessETL.pdb
+C:\Users\TEMP\Desktop\ETLLocadora\Projeto\bin\Debug\ProcessETL.exe.config
+C:\Users\TEMP\Desktop\ETLLocadora\Projeto\bin\Debug\ProcessETL.exe
+C:\Users\TEMP\Desktop\ETLLocadora\Projeto\bin\Debug\ProcessETL.pdb
+C:\Users\TEMP\Desktop\ETLLocadora\Projeto\obj\Debug\ProcessETL.csprojAssemblyReference.cache
+C:\Users\TEMP\Desktop\ETLLocadora\Projeto\obj\Debug\ProcessETL.csproj.CoreCompileInputs.cache
+C:\Users\TEMP\Desktop\ETLLocadora\Projeto\obj\Debug\ProcessETL.csproj.CopyComplete
+C:\Users\TEMP\Desktop\ETLLocadora\Projeto\obj\Debug\ProcessETL.exe
+C:\Users\TEMP\Desktop\ETLLocadora\Projeto\obj\Debug\ProcessETL.pdb

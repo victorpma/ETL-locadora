@@ -43,13 +43,13 @@ namespace ProcessETL
         {
             Program programa = new Program();
 
-            programa.tabelaArtistasOperacional = programa.PopularTabelaArtistas();
-            programa.tabelaGravadorasOperacional = programa.PopularTabelaGravadoras();
-            programa.tabelaTiposSociosOperacional = programa.PopularTabelaTiposSocios();
-            programa.tabelaSociosOperacional = programa.PopularTabelaSocios();
-            programa.tabelaItensLocacoesOperacional = programa.PopularTabelaItensLocacoes();
-            programa.tabelaTitulosOperacional = programa.PopularTabelaTitulos();
-            programa.tabelaCopiasOperacional = programa.PopularTabelaCopias();
+            programa.tabelaArtistasOperacional = programa.ExtrairTabelaArtistas();
+            programa.tabelaGravadorasOperacional = programa.ExtrairTabelaGravadoras();
+            programa.tabelaTiposSociosOperacional = programa.ExtrairTabelaTiposSocios();
+            programa.tabelaSociosOperacional = programa.ExtrairTabelaSocios();
+            programa.tabelaItensLocacoesOperacional = programa.ExtrairTabelaItensLocacoes();
+            programa.tabelaTitulosOperacional = programa.ExtrairTabelaTitulos();
+            programa.tabelaCopiasOperacional = programa.ExtrairTabelaCopias();
         }
         #endregion
 
@@ -76,8 +76,8 @@ namespace ProcessETL
         }
         #endregion
 
-        #region [PRIVATE] PopularTabelaArtistas
-        private DataTable PopularTabelaArtistas()
+        #region [PRIVATE] ExtrairTabelaArtistas
+        private DataTable ExtrairTabelaArtistas()
         {
             DataTable tabelaArtistas = new DataTable();
 
@@ -103,8 +103,8 @@ namespace ProcessETL
         }
         #endregion
 
-        #region [PRIVATE] PopularTabelaGravadoras
-        private DataTable PopularTabelaGravadoras()
+        #region [PRIVATE] ExtrairTabelaGravadoras
+        private DataTable ExtrairTabelaGravadoras()
         {
             DataTable tabelaGravadoras = new DataTable();
 
@@ -130,8 +130,8 @@ namespace ProcessETL
         }
         #endregion
 
-        #region [PRIVATE] PopularTabelaTiposSocios
-        private DataTable PopularTabelaTiposSocios()
+        #region [PRIVATE] ExtrairTabelaTiposSocios
+        private DataTable ExtrairTabelaTiposSocios()
         {
             DataTable tabelaTiposSocios = new DataTable();
 
@@ -157,8 +157,8 @@ namespace ProcessETL
         }
         #endregion
 
-        #region [PRIVATE] PopularTabelaSocios
-        private DataTable PopularTabelaSocios()
+        #region [PRIVATE] ExtrairTabelaSocios
+        private DataTable ExtrairTabelaSocios()
         {
             DataTable tabelaSocios = new DataTable();
 
@@ -184,8 +184,8 @@ namespace ProcessETL
         }
         #endregion
 
-        #region [PRIVATE] PopularTabelaItensLocacoes
-        private DataTable PopularTabelaItensLocacoes()
+        #region [PRIVATE] ExtrairTabelaItensLocacoes
+        private DataTable ExtrairTabelaItensLocacoes()
         {
             DataTable tabelaItensLocacoes = new DataTable();
 
@@ -211,8 +211,8 @@ namespace ProcessETL
         }
         #endregion
 
-        #region [PRIVATE] PopularTabelaTitulos
-        private DataTable PopularTabelaTitulos()
+        #region [PRIVATE] ExtrairTabelaTitulos
+        private DataTable ExtrairTabelaTitulos()
         {
             DataTable tabelaTitulos = new DataTable();
 
@@ -237,8 +237,8 @@ namespace ProcessETL
         }
         #endregion
 
-        #region [PRIVATE] PopularTabelaTituPopularTabelaCopiaslos
-        private DataTable PopularTabelaCopias()
+        #region [PRIVATE] ExtrairTabelaCopias
+        private DataTable ExtrairTabelaCopias()
         {
             DataTable tabelaCopias = new DataTable();
 
