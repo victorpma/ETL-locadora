@@ -23,3 +23,12 @@ D:\Projetos\ETLVendas\ProcessETL\obj\Debug\ProcessETL.csproj.CoreCompileInputs.c
 D:\Projetos\ETLVendas\ProcessETL\obj\Debug\ProcessETL.csproj.CopyComplete
 D:\Projetos\ETLVendas\ProcessETL\obj\Debug\ProcessETL.exe
 D:\Projetos\ETLVendas\ProcessETL\obj\Debug\ProcessETL.pdb
+D:\Projetos\ETLVendas\Projeto\bin\Debug\ProcessETL.exe.config
+D:\Projetos\ETLVendas\Projeto\bin\Debug\ProcessETL.exe
+D:\Projetos\ETLVendas\Projeto\bin\Debug\ProcessETL.pdb
+D:\Projetos\ETLVendas\Projeto\bin\Debug\Oracle.ManagedDataAccess.dll
+D:\Projetos\ETLVendas\Projeto\obj\Debug\ProcessETL.csprojAssemblyReference.cache
+D:\Projetos\ETLVendas\Projeto\obj\Debug\ProcessETL.csproj.CoreCompileInputs.cache
+D:\Projetos\ETLVendas\Projeto\obj\Debug\ProcessETL.csproj.CopyComplete
+D:\Projetos\ETLVendas\Projeto\obj\Debug\ProcessETL.exe
+D:\Projetos\ETLVendas\Projeto\obj\Debug\ProcessETL.pdb

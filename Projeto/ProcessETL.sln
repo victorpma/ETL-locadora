@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28307.102
+VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessETL", "ProcessETL\ProcessETL.csproj", "{B5943773-0F11-43A1-A57D-AC435266036F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessETL", "ProcessETL.csproj", "{B5943773-0F11-43A1-A57D-AC435266036F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7BD0A79E-F449-4F03-A7E3-490697637C5B}
+		SolutionGuid = {1D0410F0-A909-43C5-A967-38C91057EC95}
 	EndGlobalSection
 EndGlobal
