@@ -6,21 +6,29 @@ namespace ProcessETL
 {
     public class Program
     {
-        private static string _connString = "Data Source=//localhost/XE;User Id=system;Password=admin123;";
+        private static string _conexaoBancoOperacional = "Data Source=//localhost/XE;User Id=system;Password=admin123;";
+        private static string _conexaoBancoDataWarehouse = "Data Source=//localhost/XE;User Id=system;Password=admin123;";
+
+        #region Stagging Area
+        DataTable tabelaArtistasOperacional;
+        DataTable tabelaGravadorasOperacional;
+        DataTable tabelaTiposSociosOperacional;
+        DataTable tabelaSociosOperacional;
+        DataTable tabelaItensLocacoesOperacional;
+        DataTable tabelaTitulosOperacional;
+        DataTable tabelaCopiasOperacional;
+
+        DataTable dimensaoTempo;
+        DataTable dimensaoArtistas;
+        #endregion
 
         static void Main(string[] args)
         {
             try
             {
-                Program programa = new Program();
-
-                DataTable artistas = programa.PopularTabelaArtistas();
-                DataTable gravadoras = programa.PopularTabelaGravadoras();
-                DataTable tiposSocios = programa.PopularTabelaTiposSocios();
-                DataTable socios = programa.PopularTabelaSocios();
-                DataTable itensLocacoes = programa.PopularTabelaItensLocacoes();
-                DataTable titulos = programa.PopularTabelaTitulos();
-                DataTable copias = programa.PopularTabelaCopias();
+                RealizarExtracao();
+                RealizarTransformacao();
+                //RealizarLoad();
 
                 Console.ReadLine();
             }
@@ -30,12 +38,50 @@ namespace ProcessETL
             }
         }
 
+        #region RealizarExtracao
+        private static void RealizarExtracao()
+        {
+            Program programa = new Program();
+
+            programa.tabelaArtistasOperacional = programa.PopularTabelaArtistas();
+            programa.tabelaGravadorasOperacional = programa.PopularTabelaGravadoras();
+            programa.tabelaTiposSociosOperacional = programa.PopularTabelaTiposSocios();
+            programa.tabelaSociosOperacional = programa.PopularTabelaSocios();
+            programa.tabelaItensLocacoesOperacional = programa.PopularTabelaItensLocacoes();
+            programa.tabelaTitulosOperacional = programa.PopularTabelaTitulos();
+            programa.tabelaCopiasOperacional = programa.PopularTabelaCopias();
+        }
+        #endregion
+
+        #region RealizarTransformacao
+        private static void RealizarTransformacao()
+        {
+            Program programa = new Program();
+
+            programa.dimensaoArtistas = new DataTable();
+            programa.dimensaoArtistas.Columns.Add("ID_ART", typeof(int));
+            programa.dimensaoArtistas.Columns.Add("TPO_ART", typeof(string));
+            programa.dimensaoArtistas.Columns.Add("NAC_BRAS", typeof(string));
+            programa.dimensaoArtistas.Columns.Add("NOM_ART", typeof(string));
+
+            foreach (DataRow artistasRow in programa.tabelaArtistasOperacional.Rows)
+            {
+                DataRow row = programa.dimensaoArtistas.NewRow();
+
+                row["ID_ART"] = artistasRow["COD_ART"];
+                row["TPO_ART"] = artistasRow["TPO_ART"];
+                row["NAC_BRAS"] = artistasRow["NAC_BRAS"];
+                row["NOM_ART"] = artistasRow["NOM_ART"];
+            }
+        }
+        #endregion
+
         #region [PRIVATE] PopularTabelaArtistas
         private DataTable PopularTabelaArtistas()
         {
             DataTable tabelaArtistas = new DataTable();
 
-            using (var conexao = new OracleConnection(_connString))
+            using (var conexao = new OracleConnection(_conexaoBancoOperacional))
             {
                 conexao.Open();
 
@@ -62,7 +108,7 @@ namespace ProcessETL
         {
             DataTable tabelaGravadoras = new DataTable();
 
-            using (var conexao = new OracleConnection(_connString))
+            using (var conexao = new OracleConnection(_conexaoBancoOperacional))
             {
                 conexao.Open();
 
@@ -89,7 +135,7 @@ namespace ProcessETL
         {
             DataTable tabelaTiposSocios = new DataTable();
 
-            using (var conexao = new OracleConnection(_connString))
+            using (var conexao = new OracleConnection(_conexaoBancoOperacional))
             {
                 conexao.Open();
 
@@ -116,7 +162,7 @@ namespace ProcessETL
         {
             DataTable tabelaSocios = new DataTable();
 
-            using (var conexao = new OracleConnection(_connString))
+            using (var conexao = new OracleConnection(_conexaoBancoOperacional))
             {
                 conexao.Open();
 
@@ -143,7 +189,7 @@ namespace ProcessETL
         {
             DataTable tabelaItensLocacoes = new DataTable();
 
-            using (var conexao = new OracleConnection(_connString))
+            using (var conexao = new OracleConnection(_conexaoBancoOperacional))
             {
                 conexao.Open();
 
@@ -170,7 +216,7 @@ namespace ProcessETL
         {
             DataTable tabelaTitulos = new DataTable();
 
-            using (var conexao = new OracleConnection(_connString))
+            using (var conexao = new OracleConnection(_conexaoBancoOperacional))
             {
                 conexao.Open();
 
@@ -196,7 +242,7 @@ namespace ProcessETL
         {
             DataTable tabelaCopias = new DataTable();
 
-            using (var conexao = new OracleConnection(_connString))
+            using (var conexao = new OracleConnection(_conexaoBancoOperacional))
             {
                 conexao.Open();
 
