@@ -6,7 +6,7 @@ namespace ProcessETL
 {
     public class Program
     {
-        private static string _conexaoBancoOperacional = "Data Source=//localhost/XE;User Id=system;Password=admin123;";
+        private static string _conexaoBancoOperacional = "Data Source=Locadora;User Id=system;Password=admin123;";
         private static string _conexaoBancoDataWarehouse = "Data Source=//localhost/XE;User Id=system;Password=admin123;";
 
         #region Stagging Area
@@ -32,7 +32,7 @@ namespace ProcessETL
             {
                 RealizarExtracao();
                 RealizarTransformacao();
-                //RealizarCarga();                
+                RealizarCarga();
             }
             catch (Exception exception)
             {
@@ -68,6 +68,16 @@ namespace ProcessETL
             TransformarTabelaGravadorasEmDimensao();
             TransformarTabelaSociosEmDimensao();
             TransformarTabelaTitulosEmDimensao();
+            TransformarTabelaLocacoesEmFatos();
+        }
+        #endregion
+
+        #region RealizarCarga
+        private static void RealizarCarga()
+        {
+            Console.WriteLine("---------- ENVIANDO CARGA PARA BANCO DW ----------");
+
+            EnviarCargaDimensaoArtistas();
         }
         #endregion
 
@@ -428,6 +438,40 @@ namespace ProcessETL
             fatosLocacoes.Columns.Add("VALOR_ARRECADO", typeof(decimal));
             fatosLocacoes.Columns.Add("TEMPO_DEVOLUCAO", typeof(decimal));
             fatosLocacoes.Columns.Add("MULTA_ATRASO", typeof(decimal));
+        }
+        #endregion
+
+        #region [PRIVATE] EnviarCargaDimensaoArtistas
+        private static void EnviarCargaDimensaoArtistas()
+        {
+            using (var conexao = new OracleConnection(_conexaoBancoDataWarehouse))
+            {
+                Console.WriteLine("Realizando carga na dimensão DM_ARTISTA...");
+
+                conexao.Open();
+
+                var scriptSQL = "INSERT INTO dm_artista(ID_ART,TPO_ART,NAC_BRAS,NOM_ART) VALUES (:ID,:TPO_ART,:NAC_BRAS,:NOM_ART)";
+
+
+                foreach (DataRow artistasRow in dimensaoArtistas.Rows)
+                {
+                    using (var commandSQL = new OracleCommand(scriptSQL, conexao))
+                    {
+                        OracleParameter[] parametros = new OracleParameter[]
+                        {
+                            new OracleParameter("id",artistasRow["ID_ART"]),
+                            new OracleParameter("TPO_ART",artistasRow["TPO_ART"]),
+                            new OracleParameter("NAC_BRAS",artistasRow["NAC_BRAS"]),
+                            new OracleParameter("NOM_ART",artistasRow["NOM_ART"]),
+                        };
+
+                        commandSQL.Parameters.AddRange(parametros);
+                        commandSQL.ExecuteNonQuery();
+                    }
+                }
+            }
+
+            Console.WriteLine("Carga realizada com sucesso.");
         }
         #endregion
     }

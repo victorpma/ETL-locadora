@@ -40,3 +40,4 @@ C:\Users\TEMP\Desktop\ETLLocadora\Projeto\obj\Debug\ProcessETL.csproj.CoreCompil
 C:\Users\TEMP\Desktop\ETLLocadora\Projeto\obj\Debug\ProcessETL.csproj.CopyComplete
 C:\Users\TEMP\Desktop\ETLLocadora\Projeto\obj\Debug\ProcessETL.exe
 C:\Users\TEMP\Desktop\ETLLocadora\Projeto\obj\Debug\ProcessETL.pdb
+D:\Projetos\ETLVendas\Projeto\bin\Debug\Oracle.DataAccess.dll
