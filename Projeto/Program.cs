@@ -21,14 +21,17 @@ namespace ProcessETL
         DataTable dimensaoTempo;
         DataTable dimensaoArtistas;
         DataTable dimensaoGravadoras;
+        DataTable dimensaoSocios;
+        DataTable dimensaoTitulos;
         #endregion
 
         static void Main(string[] args)
         {
             try
             {
-                RealizarExtracao();
-                RealizarTransformacao();
+
+                // RealizarExtracao();
+                //RealizarTransformacao();
                 //RealizarCarga();
 
                 Console.ReadLine();
@@ -89,10 +92,44 @@ namespace ProcessETL
 
                 row["ID_GRAV"] = gravadoraRow["COD_GRAV"];
                 row["UF_GRAV"] = gravadoraRow["UF_GRAV"];
-                row["NAC_BRAS"] = gravadoraRow["NAC_BRAS"] == "F" ? "Falso" : "Verdadeiro";
+                row["NAC_BRAS"] = gravadoraRow["NAC_BRAS"].ToString() == "F" ? "Falso" : "Verdadeiro";
                 row["NOM_GRAV"] = programa.ObterNomeEstadoPorSigla(gravadoraRow["NOM_GRAV"].ToString());
 
                 programa.dimensaoGravadoras.Rows.Add(row);
+            }
+
+            programa.dimensaoSocios = new DataTable();
+            programa.dimensaoSocios.Columns.Add("ID_SOC", typeof(int));
+            programa.dimensaoSocios.Columns.Add("NOM_SOC", typeof(string));
+            programa.dimensaoSocios.Columns.Add("TIPO_SOCIO", typeof(string));
+
+            foreach (DataRow sociosRow in programa.tabelaSociosOperacional.Rows)
+            {
+                DataRow row = programa.dimensaoSocios.NewRow();
+                row["ID_SOC"] = sociosRow["COD_SOC"];
+                row["NOM_SOC"] = sociosRow["NOM_SOC"];
+                row["TIPO_SOCIO"] = programa.ObterDescricaoTipoSocioPeloCodigo(Convert.ToInt32(sociosRow["COD_TPS"].ToString()));
+
+                programa.dimensaoSocios.Rows.Add(row);
+            }
+
+            programa.dimensaoTitulos = new DataTable();
+            programa.dimensaoTitulos.Columns.Add("ID_TITULO", typeof(int));
+            programa.dimensaoTitulos.Columns.Add("TPO_TITULO", typeof(string));
+            programa.dimensaoTitulos.Columns.Add("CLA_TITULO", typeof(string));
+            programa.dimensaoTitulos.Columns.Add("DSC_TITULO", typeof(string));
+
+            foreach (DataRow titulosRow in programa.tabelaTitulosOperacional.Rows)
+            {
+                DataRow row = programa.dimensaoTitulos.NewRow();
+                row["ID_TITULO"] = titulosRow["COD_TIT"];
+                row["TPO_TITULO"] = titulosRow["TPO_TIT"].ToString() == EnumModel.TipoTitulo.CD.ToString() ? "CD" : "DVD";
+                row["CLA_TITULO"] = titulosRow["CLA_TIT"].ToString() == EnumModel.ClassificacaoTitulo.Livre.ToString() ? "Livre" :
+                                    titulosRow["CLA_TIT"].ToString() == EnumModel.ClassificacaoTitulo.Normal.ToString() ? "Normal" :
+                                                                                                                          "Promocional";
+                row["DSC_TITULO"] = titulosRow["DSC_TIT"];
+
+                programa.dimensaoSocios.Rows.Add(row);
             }
         }
         #endregion
@@ -287,7 +324,7 @@ namespace ProcessETL
         #region [PRIVATE] ObterNomeEstadoPorSigla
         private string ObterNomeEstadoPorSigla(string dsSiglaEstado)
         {
-            string dsSiglaEstado = "";
+            var descricaoEstado = "";
 
             switch (dsSiglaEstado)
             {
@@ -309,6 +346,24 @@ namespace ProcessETL
             }
 
             return dsSiglaEstado;
+        }
+        #endregion
+
+        #region [PRIVATE] ObterDescricaoTipoSocioPeloCodigo
+        private string ObterDescricaoTipoSocioPeloCodigo(int codigoTipoSocio)
+        {
+            Program programa = new Program();
+
+            string descricaoTipoSocio = "";
+
+            DataRow[] tipoSocio = programa.tabelaTiposSociosOperacional.Select($"COD_TPS = {codigoTipoSocio}");
+
+            descricaoTipoSocio = tipoSocio[0].Field<string>("DSC_TPS");
+
+            if (string.IsNullOrEmpty(descricaoTipoSocio))
+                throw new Exception();
+
+            return descricaoTipoSocio;
         }
         #endregion
     }
