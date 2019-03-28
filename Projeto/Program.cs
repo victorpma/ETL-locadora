@@ -10,132 +10,69 @@ namespace ProcessETL
         private static string _conexaoBancoDataWarehouse = "Data Source=//localhost/XE;User Id=system;Password=admin123;";
 
         #region Stagging Area
-        DataTable tabelaArtistasOperacional;
-        DataTable tabelaGravadorasOperacional;
-        DataTable tabelaTiposSociosOperacional;
-        DataTable tabelaSociosOperacional;
-        DataTable tabelaItensLocacoesOperacional;
-        DataTable tabelaTitulosOperacional;
-        DataTable tabelaCopiasOperacional;
+        static DataTable tabelaArtistasOperacional;
+        static DataTable tabelaGravadorasOperacional;
+        static DataTable tabelaTiposSociosOperacional;
+        static DataTable tabelaSociosOperacional;
+        static DataTable tabelaItensLocacoesOperacional;
+        static DataTable tabelaTitulosOperacional;
+        static DataTable tabelaCopiasOperacional;
 
-        DataTable dimensaoTempo;
-        DataTable dimensaoArtistas;
-        DataTable dimensaoGravadoras;
-        DataTable dimensaoSocios;
-        DataTable dimensaoTitulos;
+        static DataTable dimensaoTempo;
+        static DataTable dimensaoArtistas;
+        static DataTable dimensaoGravadoras;
+        static DataTable dimensaoSocios;
+        static DataTable dimensaoTitulos;
+        static DataTable fatosLocacoes;
         #endregion
 
         static void Main(string[] args)
         {
             try
             {
-
-                // RealizarExtracao();
-                //RealizarTransformacao();
-                //RealizarCarga();
-
-                Console.ReadLine();
+                RealizarExtracao();
+                RealizarTransformacao();
+                //RealizarCarga();                
             }
             catch (Exception exception)
             {
+
+                Console.WriteLine("---------- ERRO! ----------");
                 Console.WriteLine("Ocorreu um erro: {0}", exception.Message);
             }
+
+            Console.ReadLine();
         }
 
         #region RealizarExtracao
         private static void RealizarExtracao()
         {
-            Program programa = new Program();
+            Console.WriteLine("---------- EXTRAÇÃO BANCO OPERACIONAL ----------");
 
-            programa.tabelaArtistasOperacional = programa.ExtrairTabelaArtistas();
-            programa.tabelaGravadorasOperacional = programa.ExtrairTabelaGravadoras();
-            programa.tabelaTiposSociosOperacional = programa.ExtrairTabelaTiposSocios();
-            programa.tabelaSociosOperacional = programa.ExtrairTabelaSocios();
-            programa.tabelaItensLocacoesOperacional = programa.ExtrairTabelaItensLocacoes();
-            programa.tabelaTitulosOperacional = programa.ExtrairTabelaTitulos();
-            programa.tabelaCopiasOperacional = programa.ExtrairTabelaCopias();
+            tabelaArtistasOperacional = ExtrairTabelaArtistas();
+            tabelaGravadorasOperacional = ExtrairTabelaGravadoras();
+            tabelaTiposSociosOperacional = ExtrairTabelaTiposSocios();
+            tabelaSociosOperacional = ExtrairTabelaSocios();
+            tabelaItensLocacoesOperacional = ExtrairTabelaItensLocacoes();
+            tabelaTitulosOperacional = ExtrairTabelaTitulos();
+            tabelaCopiasOperacional = ExtrairTabelaCopias();
         }
         #endregion
 
         #region RealizarTransformacao
         private static void RealizarTransformacao()
         {
-            Program programa = new Program();
+            Console.WriteLine("---------- TRANSFORMAÇÃO TABELA -> DIMENSÃO ----------");
 
-            programa.dimensaoArtistas = new DataTable();
-            programa.dimensaoArtistas.Columns.Add("ID_ART", typeof(int));
-            programa.dimensaoArtistas.Columns.Add("TPO_ART", typeof(string));
-            programa.dimensaoArtistas.Columns.Add("NAC_BRAS", typeof(string));
-            programa.dimensaoArtistas.Columns.Add("NOM_ART", typeof(string));
-
-            foreach (DataRow artistasRow in programa.tabelaArtistasOperacional.Rows)
-            {
-                DataRow row = programa.dimensaoArtistas.NewRow();
-
-                row["ID_ART"] = artistasRow["COD_ART"];
-                row["TPO_ART"] = artistasRow["TPO_ART"];
-                row["NAC_BRAS"] = artistasRow["NAC_BRAS"];
-                row["NOM_ART"] = artistasRow["NOM_ART"];
-
-                programa.dimensaoArtistas.Rows.Add(row);
-            }
-
-            programa.dimensaoGravadoras = new DataTable();
-            programa.dimensaoGravadoras.Columns.Add("ID_GRAV", typeof(int));
-            programa.dimensaoGravadoras.Columns.Add("UF_GRAV", typeof(string));
-            programa.dimensaoGravadoras.Columns.Add("NAC_BRAS", typeof(string));
-            programa.dimensaoGravadoras.Columns.Add("NOM_GRAV", typeof(string));
-
-            foreach (DataRow gravadoraRow in programa.tabelaGravadorasOperacional.Rows)
-            {
-                DataRow row = programa.dimensaoGravadoras.NewRow();
-
-                row["ID_GRAV"] = gravadoraRow["COD_GRAV"];
-                row["UF_GRAV"] = gravadoraRow["UF_GRAV"];
-                row["NAC_BRAS"] = gravadoraRow["NAC_BRAS"].ToString() == "F" ? "Falso" : "Verdadeiro";
-                row["NOM_GRAV"] = programa.ObterNomeEstadoPorSigla(gravadoraRow["NOM_GRAV"].ToString());
-
-                programa.dimensaoGravadoras.Rows.Add(row);
-            }
-
-            programa.dimensaoSocios = new DataTable();
-            programa.dimensaoSocios.Columns.Add("ID_SOC", typeof(int));
-            programa.dimensaoSocios.Columns.Add("NOM_SOC", typeof(string));
-            programa.dimensaoSocios.Columns.Add("TIPO_SOCIO", typeof(string));
-
-            foreach (DataRow sociosRow in programa.tabelaSociosOperacional.Rows)
-            {
-                DataRow row = programa.dimensaoSocios.NewRow();
-                row["ID_SOC"] = sociosRow["COD_SOC"];
-                row["NOM_SOC"] = sociosRow["NOM_SOC"];
-                row["TIPO_SOCIO"] = programa.ObterDescricaoTipoSocioPeloCodigo(Convert.ToInt32(sociosRow["COD_TPS"].ToString()));
-
-                programa.dimensaoSocios.Rows.Add(row);
-            }
-
-            programa.dimensaoTitulos = new DataTable();
-            programa.dimensaoTitulos.Columns.Add("ID_TITULO", typeof(int));
-            programa.dimensaoTitulos.Columns.Add("TPO_TITULO", typeof(string));
-            programa.dimensaoTitulos.Columns.Add("CLA_TITULO", typeof(string));
-            programa.dimensaoTitulos.Columns.Add("DSC_TITULO", typeof(string));
-
-            foreach (DataRow titulosRow in programa.tabelaTitulosOperacional.Rows)
-            {
-                DataRow row = programa.dimensaoTitulos.NewRow();
-                row["ID_TITULO"] = titulosRow["COD_TIT"];
-                row["TPO_TITULO"] = titulosRow["TPO_TIT"].ToString() == EnumModel.TipoTitulo.CD.ToString() ? "CD" : "DVD";
-                row["CLA_TITULO"] = titulosRow["CLA_TIT"].ToString() == EnumModel.ClassificacaoTitulo.Livre.ToString() ? "Livre" :
-                                    titulosRow["CLA_TIT"].ToString() == EnumModel.ClassificacaoTitulo.Normal.ToString() ? "Normal" :
-                                                                                                                          "Promocional";
-                row["DSC_TITULO"] = titulosRow["DSC_TIT"];
-
-                programa.dimensaoSocios.Rows.Add(row);
-            }
+            TransformarTabelaArtistasEmDimensao();
+            TransformarTabelaGravadorasEmDimensao();
+            TransformarTabelaSociosEmDimensao();
+            TransformarTabelaTitulosEmDimensao();
         }
         #endregion
 
         #region [PRIVATE] ExtrairTabelaArtistas
-        private DataTable ExtrairTabelaArtistas()
+        private static DataTable ExtrairTabelaArtistas()
         {
             DataTable tabelaArtistas = new DataTable();
 
@@ -143,7 +80,7 @@ namespace ProcessETL
             {
                 conexao.Open();
 
-                Console.WriteLine("Lendo tabela ARTISTAS...");
+                Console.WriteLine("Extraindo tabela ARTISTAS...");
 
                 OracleCommand commandSQL = conexao.CreateCommand();
 
@@ -156,13 +93,14 @@ namespace ProcessETL
                 tabelaArtistas.Load(dr);
             }
 
+            Console.WriteLine("Tabela ARTISTAS extraída com sucesso - {0} resultado(s).\n", tabelaArtistas.Rows.Count);
             return tabelaArtistas;
 
         }
         #endregion
 
         #region [PRIVATE] ExtrairTabelaGravadoras
-        private DataTable ExtrairTabelaGravadoras()
+        private static DataTable ExtrairTabelaGravadoras()
         {
             DataTable tabelaGravadoras = new DataTable();
 
@@ -170,7 +108,7 @@ namespace ProcessETL
             {
                 conexao.Open();
 
-                Console.WriteLine("Lendo tabela GRAVADORAS...");
+                Console.WriteLine("Extraindo tabela GRAVADORAS...");
 
                 OracleCommand commandSQL = conexao.CreateCommand();
 
@@ -183,13 +121,13 @@ namespace ProcessETL
                 tabelaGravadoras.Load(dr);
             }
 
+            Console.WriteLine("Tabela GRAVADORAS extraída com sucesso - {0} resultado(s).\n", tabelaGravadoras.Rows.Count);
             return tabelaGravadoras;
-
         }
         #endregion
 
         #region [PRIVATE] ExtrairTabelaTiposSocios
-        private DataTable ExtrairTabelaTiposSocios()
+        private static DataTable ExtrairTabelaTiposSocios()
         {
             DataTable tabelaTiposSocios = new DataTable();
 
@@ -197,7 +135,7 @@ namespace ProcessETL
             {
                 conexao.Open();
 
-                Console.WriteLine("Lendo tabela TIPOS_SOCIOS...");
+                Console.WriteLine("Extraindo tabela TIPOS_SOCIOS...");
 
                 OracleCommand commandSQL = conexao.CreateCommand();
 
@@ -210,13 +148,14 @@ namespace ProcessETL
                 tabelaTiposSocios.Load(dr);
             }
 
+            Console.WriteLine("Tabela TIPOS_SOCIOS extraída com sucesso - {0} resultado(s).\n", tabelaTiposSocios.Rows.Count);
             return tabelaTiposSocios;
 
         }
         #endregion
 
         #region [PRIVATE] ExtrairTabelaSocios
-        private DataTable ExtrairTabelaSocios()
+        private static DataTable ExtrairTabelaSocios()
         {
             DataTable tabelaSocios = new DataTable();
 
@@ -224,7 +163,7 @@ namespace ProcessETL
             {
                 conexao.Open();
 
-                Console.WriteLine("Lendo tabela SOCIOS...");
+                Console.WriteLine("Extraindo tabela SOCIOS...");
 
                 OracleCommand commandSQL = conexao.CreateCommand();
 
@@ -237,13 +176,13 @@ namespace ProcessETL
                 tabelaSocios.Load(dr);
             }
 
+            Console.WriteLine("Tabela TIPOS_SOCIOS extraída com sucesso - {0} resultado(s).\n", tabelaSocios.Rows.Count);
             return tabelaSocios;
-
         }
         #endregion
 
         #region [PRIVATE] ExtrairTabelaItensLocacoes
-        private DataTable ExtrairTabelaItensLocacoes()
+        private static DataTable ExtrairTabelaItensLocacoes()
         {
             DataTable tabelaItensLocacoes = new DataTable();
 
@@ -251,7 +190,7 @@ namespace ProcessETL
             {
                 conexao.Open();
 
-                Console.WriteLine("Lendo tabela ITENS_LOCACOES...");
+                Console.WriteLine("Extraindo tabela ITENS_LOCACOES...");
 
                 OracleCommand commandSQL = conexao.CreateCommand();
 
@@ -264,13 +203,14 @@ namespace ProcessETL
                 tabelaItensLocacoes.Load(dr);
             }
 
+            Console.WriteLine("Tabela ITENS_LOCACOES extraída com sucesso - {0} resultado(s).\n", tabelaItensLocacoes.Rows.Count);
             return tabelaItensLocacoes;
 
         }
         #endregion
 
         #region [PRIVATE] ExtrairTabelaTitulos
-        private DataTable ExtrairTabelaTitulos()
+        private static DataTable ExtrairTabelaTitulos()
         {
             DataTable tabelaTitulos = new DataTable();
 
@@ -278,7 +218,7 @@ namespace ProcessETL
             {
                 conexao.Open();
 
-                Console.WriteLine("Lendo tabela TITULOS...");
+                Console.WriteLine("Extraindo tabela TITULOS...");
 
                 OracleCommand commandSQL = conexao.CreateCommand();
 
@@ -291,12 +231,13 @@ namespace ProcessETL
                 tabelaTitulos.Load(dr);
             }
 
+            Console.WriteLine("Tabela TITULOS extraída com sucesso - {0} resultado(s).\n", tabelaTitulos.Rows.Count);
             return tabelaTitulos;
         }
         #endregion
 
         #region [PRIVATE] ExtrairTabelaCopias
-        private DataTable ExtrairTabelaCopias()
+        private static DataTable ExtrairTabelaCopias()
         {
             DataTable tabelaCopias = new DataTable();
 
@@ -304,7 +245,7 @@ namespace ProcessETL
             {
                 conexao.Open();
 
-                Console.WriteLine("Lendo tabela COPIAS...");
+                Console.WriteLine("Extraindo tabela COPIAS...");
 
                 OracleCommand commandSQL = conexao.CreateCommand();
 
@@ -317,12 +258,13 @@ namespace ProcessETL
                 tabelaCopias.Load(dr);
             }
 
+            Console.WriteLine("Tabela COPIAS extraída com sucesso - {0} resultado(s).\n", tabelaCopias.Rows.Count);
             return tabelaCopias;
         }
         #endregion
 
         #region [PRIVATE] ObterNomeEstadoPorSigla
-        private string ObterNomeEstadoPorSigla(string dsSiglaEstado)
+        private static string ObterNomeEstadoPorSigla(string dsSiglaEstado)
         {
             var descricaoEstado = "";
 
@@ -350,13 +292,13 @@ namespace ProcessETL
         #endregion
 
         #region [PRIVATE] ObterDescricaoTipoSocioPeloCodigo
-        private string ObterDescricaoTipoSocioPeloCodigo(int codigoTipoSocio)
+        private static string ObterDescricaoTipoSocioPeloCodigo(int codigoTipoSocio)
         {
             Program programa = new Program();
 
             string descricaoTipoSocio = "";
 
-            DataRow[] tipoSocio = programa.tabelaTiposSociosOperacional.Select($"COD_TPS = {codigoTipoSocio}");
+            DataRow[] tipoSocio = tabelaTiposSociosOperacional.Select($"COD_TPS = {codigoTipoSocio}");
 
             descricaoTipoSocio = tipoSocio[0].Field<string>("DSC_TPS");
 
@@ -364,6 +306,128 @@ namespace ProcessETL
                 throw new Exception();
 
             return descricaoTipoSocio;
+        }
+        #endregion
+
+        #region [PRIVATE] TransformarTabelaArtistasEmDimensao
+        private static void TransformarTabelaArtistasEmDimensao()
+        {
+            Console.WriteLine("Transformando tabela Artistas em dimensão...");
+
+            dimensaoArtistas = new DataTable();
+            dimensaoArtistas.Columns.Add("ID_ART", typeof(int));
+            dimensaoArtistas.Columns.Add("TPO_ART", typeof(string));
+            dimensaoArtistas.Columns.Add("NAC_BRAS", typeof(string));
+            dimensaoArtistas.Columns.Add("NOM_ART", typeof(string));
+
+            foreach (DataRow artistasRow in tabelaArtistasOperacional.Rows)
+            {
+                DataRow row = dimensaoArtistas.NewRow();
+
+                row["ID_ART"] = artistasRow["COD_ART"];
+                row["TPO_ART"] = artistasRow["TPO_ART"];
+                row["NAC_BRAS"] = artistasRow["NAC_BRAS"];
+                row["NOM_ART"] = artistasRow["NOM_ART"];
+
+                dimensaoArtistas.Rows.Add(row);
+            }
+
+            Console.WriteLine("Transformação realizada com sucesso.\n");
+        }
+        #endregion
+
+        #region [PRIVATE] TransformarGravadorasEmDimensao
+        private static void TransformarTabelaGravadorasEmDimensao()
+        {
+            Console.WriteLine("Transformando tabela Gravadoras em dimensão...");
+
+            dimensaoGravadoras = new DataTable();
+            dimensaoGravadoras.Columns.Add("ID_GRAV", typeof(int));
+            dimensaoGravadoras.Columns.Add("UF_GRAV", typeof(string));
+            dimensaoGravadoras.Columns.Add("NAC_BRAS", typeof(string));
+            dimensaoGravadoras.Columns.Add("NOM_GRAV", typeof(string));
+
+            foreach (DataRow gravadoraRow in tabelaGravadorasOperacional.Rows)
+            {
+                DataRow row = dimensaoGravadoras.NewRow();
+
+                row["ID_GRAV"] = gravadoraRow["COD_GRAV"];
+                row["UF_GRAV"] = ObterNomeEstadoPorSigla(gravadoraRow["UF_GRAV"].ToString());
+                row["NAC_BRAS"] = gravadoraRow["NAC_BRAS"].ToString() == "F" ? "Falso" : "Verdadeiro";
+                row["NOM_GRAV"] = gravadoraRow["NOM_GRAV"];
+
+                dimensaoGravadoras.Rows.Add(row);
+            }
+
+            Console.WriteLine("Transformação realizada com sucesso.\n");
+        }
+        #endregion
+
+        #region [PRIVATE] TransformarTabelaSociosEmDimensao
+        private static void TransformarTabelaSociosEmDimensao()
+        {
+            Console.WriteLine("Transformando tabela SOCIOS em dimensão...");
+
+            dimensaoSocios = new DataTable();
+            dimensaoSocios.Columns.Add("ID_SOC", typeof(int));
+            dimensaoSocios.Columns.Add("NOM_SOC", typeof(string));
+            dimensaoSocios.Columns.Add("TIPO_SOCIO", typeof(string));
+
+            foreach (DataRow sociosRow in tabelaSociosOperacional.Rows)
+            {
+                DataRow row = dimensaoSocios.NewRow();
+                row["ID_SOC"] = sociosRow["COD_SOC"];
+                row["NOM_SOC"] = sociosRow["NOM_SOC"];
+                row["TIPO_SOCIO"] = ObterDescricaoTipoSocioPeloCodigo(Convert.ToInt32(sociosRow["COD_TPS"].ToString()));
+
+                dimensaoSocios.Rows.Add(row);
+            }
+
+            Console.WriteLine("Transformação realizada com sucesso.\n");
+        }
+        #endregion
+
+        #region [PRIVATE] TransformarTabelaTitulosEmDimensao
+        private static void TransformarTabelaTitulosEmDimensao()
+        {
+            Console.WriteLine("Transformando tabela TITULOS em dimensão...");
+
+            dimensaoTitulos = new DataTable();
+            dimensaoTitulos.Columns.Add("ID_TITULO", typeof(int));
+            dimensaoTitulos.Columns.Add("TPO_TITULO", typeof(string));
+            dimensaoTitulos.Columns.Add("CLA_TITULO", typeof(string));
+            dimensaoTitulos.Columns.Add("DSC_TITULO", typeof(string));
+
+            foreach (DataRow titulosRow in tabelaTitulosOperacional.Rows)
+            {
+                DataRow row = dimensaoTitulos.NewRow();
+
+                row["ID_TITULO"] = titulosRow["COD_TIT"];
+                row["TPO_TITULO"] = titulosRow["TPO_TIT"].ToString() == EnumModel.TipoTitulo.CD.ToString() ? "CD" : "DVD";
+                row["CLA_TITULO"] = titulosRow["CLA_TIT"].ToString() == EnumModel.ClassificacaoTitulo.Livre.ToString() ? "Livre" :
+                                    titulosRow["CLA_TIT"].ToString() == EnumModel.ClassificacaoTitulo.Normal.ToString() ? "Normal" :
+                                                                                                                          "Promocional";
+                row["DSC_TITULO"] = titulosRow["DSC_TIT"];
+
+                dimensaoTitulos.Rows.Add(row);
+            }
+
+            Console.WriteLine("Transformação realizada com sucesso.\n");
+        }
+        #endregion
+
+        #region [PRIVATE] TransformarTabelaCopiasLocacoesEmDimensao
+        private static void TransformarTabelaLocacoesEmFatos()
+        {
+            fatosLocacoes = new DataTable();
+            fatosLocacoes.Columns.Add("ID_SOC", typeof(int));
+            fatosLocacoes.Columns.Add("ID_TITULO", typeof(string));
+            fatosLocacoes.Columns.Add("ID_ART", typeof(string));
+            fatosLocacoes.Columns.Add("ID_GRAV", typeof(string));
+            fatosLocacoes.Columns.Add("ID_TEMPO", typeof(string));
+            fatosLocacoes.Columns.Add("VALOR_ARRECADO", typeof(decimal));
+            fatosLocacoes.Columns.Add("TEMPO_DEVOLUCAO", typeof(decimal));
+            fatosLocacoes.Columns.Add("MULTA_ATRASO", typeof(decimal));
         }
         #endregion
     }
